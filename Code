@@ -1,0 +1,97 @@
+## Project:  STA 215, Fall 2023, Final Project
+# Located:   Kline TCNJ Google Drive
+# File Name: template
+# Date:      2023_11_16
+# Who:       Sam Eilert
+
+
+
+## Load packages
+# NOTE: Run base.R if these commands return an error!
+library(readr)
+library(dplyr)
+library(tidytext)
+library(tidyverse)
+library(ggplot2)
+library(haven)
+library(forcats)
+library(psych)
+
+# Load data 
+data <- read_delim("raw_data.csv")
+
+mean(data$kills)
+mean(data$scenes)
+mean(data$business)
+mean(data$relations)
+sd(data$kills)
+sd(data$scenes)
+table(data$business)
+table(data$relations)
+
+
+##################################################################################
+############### STEP 1: Table 1    ####################   
+##################################################################################
+
+table(data$business)
+table(data$relations)
+
+##################################################################################
+####################  STEP 2: Table  2             ####################   
+##################################################################################
+
+table(data$relations,data$business)
+
+##################################################################################
+####################   STEP 3: Chi squared test             ####################   
+##################################################################################
+
+chisq.test(data$relations,data$business)
+
+##################################################################################
+####################  STEP 4: ANOVA                ####################   
+##################################################################################
+
+anova <- aov(kills ~ business, data = data)
+summary(anova)
+
+
+##################################################################################
+####################  STEP 5: Correlation                ####################   
+##################################################################################
+
+correlation <- cor(data$kills,data$business)
+correlation
+##################################################################################
+####################  STEP 6: Linear Regression                ####################   
+##################################################################################
+
+linear_plot <- plot(data$kills, data$scenes)
+print(linear_plot)
+
+linear_relationship <- lm(data$scenes ~ data$kills)
+summary(linear_relationship)
+
+##################################################################################
+####################  STEP 7: Figure 1                                ####################   
+##################################################################################
+
+figure1 <- plot(data$business,data$kills)
+figure1
+xmean <- mean(data$business)
+ymean <- mean(data$kills)
+abline(lm(data$kills ~ data$business), col="blue")
+abline(v = xmean, col="red")
+abline(h = ymean, col="green")
+
+##################################################################################
+####################  STEP 8: Examine residuals                     ####################   
+##################################################################################
+
+plot(data$business,residuals(linear_relationship))
+abline(lm(residuals(linear_relationship) ~ data$business), col="blue")
+residualxmean <- mean(data$business)
+residualymean <- mean(residuals(linear_relationship))
+abline(v = residualxmean, col="red")
+abline(h = residualymean, col="green")
